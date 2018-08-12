@@ -1,0 +1,73 @@
+dfi1:
+svm (kernel=poly, degree=3): no_neg/neg
+    ['SHOT_DIST', 'SHOT_CLOCK', 'CLOSE_DEF_DIST']:
+        no hmm:0.5229/0.5459
+        hmm 1 prev result: 0.5402/0.5229
+        hmm 2 prev result: 0.5747/0.5517
+        hmm 1 prev result and features: none/0.5689
+        hmm 2 prev result and features: 0.5172
+    ['SHOT_DIST', 'TOUCH_TIME', 'CLOSE_DEF_DIST', 'SHOT_CLOCK']:
+        no hmm: 0.5172/0.5344
+        hmm 1 prev result: 0.5057/0.5344
+        hmm 2 prev result: 0.5229/0.5747
+        hmm 1 prev result and features: none/0.5459
+        hmm 2 prev result and features: 0.4425
+svm (kernel=linear): no_neg/neg
+    ['SHOT_DIST', 'SHOT_CLOCK', 'CLOSE_DEF_DIST']:
+        no hmm:0.5229/0.5229
+        hmm 1 prev result: 0.5229/0.5229
+        hmm 2 prev result: 0.5229/0.5229
+        hmm 1 prev result and features: 0.5229/0.5229
+        hmm 2 prev result and features: 0.5344/0.5344
+    ['SHOT_DIST', 'TOUCH_TIME', 'CLOSE_DEF_DIST', 'SHOT_CLOCK']:
+        no hmm: 0.5229/0.5229
+        hmm 1 prev result: 0.5229/0.5229
+        hmm 2 prev result: 0.5229/0.5229
+        hmm 1 prev result and features: 0.5287/0.5287
+        hmm 2 prev result and features: 0.5229/0.5229
+
+RandomForest (1000 trees, average on 20 repetitions):
+    ['SHOT_DIST', 'SHOT_CLOCK', 'CLOSE_DEF_DIST']:
+        no hmm:0.5428/0.5344
+        hmm 1 prev result: 0.5568
+        hmm 2 prev result: 0.5511
+        hmm 1 prev result and features: 0.552
+        hmm 2 prev result and features: 0.5551
+    ['SHOT_DIST', 'TOUCH_TIME', 'CLOSE_DEF_DIST', 'SHOT_CLOCK']:
+        no hmm: 0.5172
+        hmm 1 prev result: 0.5442
+        hmm 2 prev result: 0.5465
+        hmm 1 prev result and features: 0.5758
+        hmm 2 prev result and features: 0.6146
+
+RandomForest (2000 trees, average on 20 repetitions):
+    ['SHOT_DIST', 'SHOT_CLOCK', 'CLOSE_DEF_DIST']:
+        no hmm: 0.5387
+        hmm 1 prev result: 0.5563
+        hmm 2 prev result: 0.5514
+        hmm 1 prev result and features: 0.5537
+        hmm 2 prev result and features: 0.5979
+    ['SHOT_DIST', 'TOUCH_TIME', 'CLOSE_DEF_DIST', 'SHOT_CLOCK']:
+        no hmm: 0.5149
+        hmm 1 prev result: 0.5422
+        hmm 2 prev result: 0.5445
+        hmm 1 prev result and features: 0.5841
+        hmm 2 prev result and features: 0.6109
+
+RandomForest (3000 trees, average on 20 repetitions):
+    ['SHOT_DIST', 'SHOT_CLOCK', 'CLOSE_DEF_DIST']:
+        no hmm: 0.5416
+        hmm 1 prev result: 0.5543
+        hmm 2 prev result: 0.5494
+        hmm 1 prev result and features: 0.5626
+        hmm 2 prev result and features: 0.6034
+    ['SHOT_DIST', 'TOUCH_TIME', 'CLOSE_DEF_DIST', 'SHOT_CLOCK']:
+        no hmm: 0.5155
+        hmm 1 prev result: 0.5396
+        hmm 2 prev result: 0.5436
+        hmm 1 prev result and features: 0.5813
+        hmm 2 prev result and features: 0.6121
+
+
+
+
