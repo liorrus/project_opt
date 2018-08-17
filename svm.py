@@ -4,25 +4,27 @@ import pandas as pd
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import Perceptron
-from math import ceil
+from math import ceil, floor
 
 #return a dict of train, test features and results
-def createPrevColumns(cols):
+def createPrevColumns(cols, numBack):
     columns = list(cols)
-    for i in range(1,3):
+    for i in range(numBack):
         for col in cols:
-            columns.append(col+str(i))
+            columns.append(col+str(i+1))
     del columns[columns.index('SHOT_RESULT')]
     return columns
 
-def createTrainAndTest(df, trainPercent, cols, hmm):
+def createTrainAndTest(df, trainPercent, cols, hmm, wf = False, n=3):
     size = len(df)
     trainSize = ceil(size*trainPercent)
     columns = []
     if(hmm):
-        columns = createPrevColumns(cols)
+        if(wf):
+            columns = createPrevColumns(cols+['SHOT_RESULT'], n)
+        else:
+            columns = cols+createPrevColumns(['SHOT_RESULT'], n)
     else:
-        del cols[cols.index('SHOT_RESULT')]
         columns = cols
     train_sample = df[:trainSize]
     test_sample = df[trainSize:]
@@ -36,7 +38,7 @@ def classifyAndGetConfDict(clf, trainDict, testDict):
     clf.fit(trainDict["features"], trainDict["results"])
     # print(sorted(list(zip(trainDict["features"], clf.feature_importances_)),key=lambda item: item[1],reverse=True))
     # print(clf.coef_)
-    predictions =  clf.predict(testDict["features"])
+    predictions = clf.predict(testDict["features"])
     return calculateAccuracy(predictions, testDict["results"])
 
 def calculateAccuracy(predictions, results):
@@ -58,51 +60,57 @@ def calculateAccuracy(predictions, results):
 
 def runRForestNTimes(n, trainDict, testDict):
     total = 0
-    clf = RandomForestClassifier(n_estimators=100)
+    clf = RandomForestClassifier(n_estimators=1000)
     for i in range(n):
         confusionDict = classifyAndGetConfDict(clf, trainDict, testDict)
         total += confusionDict['tp']+confusionDict['tn']
     return total/n
 
+def runAdvance(df, trainPercent, cols, hmm, wf=False, numBack=3, numIter=20):
+    df_by_player = df.groupby('player_id')
+    total_correct = 0
+    total_test_size = 0
+    for key, data in df_by_player:
+        trainDict, testDict = createTrainAndTest(data, trainPercent, cols, hmm, wf, n=numBack)
+        total_test_size += len(testDict["results"])
+        total_correct += runRForestNTimes(numIter, trainDict, testDict)*len(testDict["results"])
+    
+    return total_correct/total_test_size
+
+def runBase(df, trainPercent, cols, hmm, wf=False, numBack=3, numIter=20):
+    trainDict, testDict = createTrainAndTest(df, trainPercent, cols, hmm, wf, n=numBack)
+    return runRForestNTimes(numIter, trainDict, testDict)
 
 if __name__=="__main__":
-    #df = pd.read_csv('shot_log_train_factorized_no_nan.csv')
-    df = pd.read_csv('dfi2_no_nan.csv')
-    best = ['SHOT_DIST', 'TOUCH_TIME', 'CLOSE_DEF_DIST', 'SHOT_CLOCK', 'SHOT_RESULT']
-    best1 = ['SHOT_DIST', 'TOUCH_TIME', 'CLOSE_DEF_DIST', 'SHOT_CLOCK', 'SHOT_RESULT']
-    best2 = ['SHOT_DIST', 'TOUCH_TIME', 'CLOSE_DEF_DIST', 'SHOT_CLOCK', 'SHOT_RESULT',
-             'SHOT_RESULT1', 'SHOT_RESULT2']
+    df_temp = pd.read_csv('dfi1_no_nan.csv')
+    df = df_temp.query('player_id == player_id2')
+    cols = ['SHOT_DIST', 'TOUCH_TIME', 'CLOSE_DEF_DIST', 'SHOT_CLOCK']
 
-    cols = ['LOCATION', 'SHOT_NUMBER', 'PERIOD',
-            'SHOT_CLOCK', 'DRIBBLES', 'TOUCH_TIME', 'SHOT_DIST',
-            'CLOSE_DEF_DIST', 'SHOT_RESULT']
-    cols1 = ['LOCATION', 'SHOT_NUMBER', 'PERIOD',
-             'SHOT_CLOCK', 'DRIBBLES', 'TOUCH_TIME', 'SHOT_DIST',
-             'CLOSE_DEF_DIST', 'SHOT_RESULT']
-    cols2 = ['LOCATION', 'SHOT_NUMBER', 'PERIOD',
-             'SHOT_CLOCK', 'DRIBBLES', 'TOUCH_TIME', 'SHOT_DIST',
-             'CLOSE_DEF_DIST', 'SHOT_RESULT','SHOT_RESULT1','SHOT_RESULT2']
-    #cols1=['SHOT_CLOCK', 'SHOT_NUMBER','DRIBBLES','TOUCH_TIME','SHOT_DIST','SHOT_RESULT','SHOT_RESULT1','SHOT_RESULT2']
-    # df["missed_avg"] = df["missed_avg"] - 0.5478
-    # df["made_avg"] = df["made_avg"] - 0.4086
-    # df["TOUCH_TIME"] = df["TOUCH_TIME"] - 3.3092
-    # df["CLOSE_DEF_DIST"] = df["CLOSE_DEF_DIST"] - 3.5869
-    # df["SHOT_CLOCK"] = df["SHOT_CLOCK"] - 12
-    # df["SHOT_DIST"] = df["SHOT_DIST"] - 14.23
-    # df["W0"] = 1
+    size = len(df)
+    section_size = (len(df)/10)
 
-    trainDict, testDict = createTrainAndTest(df, 0.8, best, False)
-    trainDict1, testDict1 = createTrainAndTest(df, 0.8, best1, True)
-    trainDict2, testDict2 = createTrainAndTest(df, 0.8, best2, False)
-    print(runRForestNTimes(10, trainDict, testDict))
-    print(runRForestNTimes(10, trainDict1, testDict1))
-    print(runRForestNTimes(10, trainDict2, testDict2))
-    clf = RandomForestClassifier(n_estimators=3000)
-    # clf = Perceptron(max_iter=10000)
-    # clf = SVC(kernel="linear")
-    # confDict = classifyAndGetConfDict(clf, trainDict, testDict)
-    # print(confDict["tp"]+confDict["tn"])
-    # confDict = classifyAndGetConfDict(clf, trainDict1, testDict1)
-    # print(confDict["tp"]+confDict["tn"])
-    # confDict = classifyAndGetConfDict(clf, trainDict2, testDict2)
-    # print(confDict["tp"]+confDict["tn"])
+    print("Running Base...")
+
+    # testing base no hmm
+    print(runBase(df, 0.8, cols, hmm=False))
+
+    # testing base hmm without features
+    for i in range(1,3):
+        print(runBase(df, 0.8, cols, hmm=True, wf=False, numBack=i))
+    
+    # testing base hmm with features
+    for i in range(1,3):
+        print(runBase(df, 0.8, cols, hmm=True, wf=True, numBack=i))
+
+    print("Running Advance...")
+    
+    #testing advance no hmm 
+    print(runAdvance(df, 0.8, cols, hmm=False))
+
+    #testing advance hmm without features
+    for i in range(1,3):
+        print(runAdvance(df, 0.8, cols, hmm=True, wf=False, numBack=i))
+
+    #testing advance hmm with features
+    for i in range(1,3):
+        print(runAdvance(df, 0.8, cols, hmm=True, wf=True, numBack=i))
