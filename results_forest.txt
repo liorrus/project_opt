@@ -1,0 +1,59 @@
+['SHOT_DIST', 'TOUCH_TIME', 'CLOSE_DEF_DIST', 'SHOT_CLOCK']
+base:
+dfi1:
+    no hmm: 0.5172
+    hmm 1 prev result: 0.5442
+    hmm 2 prev result: 0.5465
+    hmm 1 prev result and features: 0.5758
+    hmm 2 prev result and features: 0.6146
+dfi2:
+    no hmm: 0.5805
+    hmm 1 prev result: 0.5829
+    hmm 2 prev result: 0.5931
+    hmm 1 prev result and features: 0.5964
+    hmm 2 prev result and features: 0.5971
+dfifull:
+    no hmm: 0.594
+    hmm 1 prev result: 0.5972
+    hmm 2 prev result: 0.601
+    hmm 3 prev result: 0.6021
+    hmm 4 prev result: 0.6027
+    hmm 5 prev result: 0.6077
+
+    hmm 1 prev result and features: 0.6226
+    hmm 2 prev result and features: 0.6291
+    hmm 3 prev result and features: 0.62968
+    hmm 4 prev result and features: 0.62957
+    hmm 5 prev result and features: 0.6303
+
+advance:
+dfi1:
+    no hmm: 0.5715
+    hmm 1 prev result: 0.5447
+    hmm 2 prev result: 0.5345
+    hmm 1 prev result and features: 0.5947
+    hmm 2 prev result and features: 0.6075
+
+dfifull:
+no hmm: 0.5760479761561392
+hmm 1 res: 0.5789419286607058
+hmm 2 res: 0.5797279107778096
+hmm 3 res: 0.5808984713008363
+hmm 1 res+feat: 0.5807302182482454
+
+
+advance with boosting:
+
+Pre Extend:  ADVANCE: Size: 283810 True NumBack:1 res: 0.5613217923580891
+Pre Extend:  ADVANCE: Size: 283810 True NumBack:2 res: 0.5617617521878436
+Pre Extend:  ADVANCE: Size: 283810 True NumBack:3 res: 0.5614222179714026
+Post Extend:  ADVANCE: Size: 283810 True NumBack:3 res: 0.5590359141121897
+Post Extend:  ADVANCE: Size: 283810 True NumBack:1 res: 0.5545645832337047
+Post Extend:  ADVANCE: Size: 283810 True NumBack:2 res: 0.5655109750848835
+
+Pre Extend:  ADVANCE: Size: 283810 True NumBack:1 wf:True res: 0.5587728946487495
+Pre Extend:  ADVANCE: Size: 283810 True NumBack:2 wf:True res: 0.5596575964803214
+Pre Extend:  ADVANCE: Size: 283810 True NumBack:3 wf:True res: 0.5589641815312515
+Post Extend:  ADVANCE: Size: 283810 True NumBack:2 wf:True res: 0.5653340347185691
+Post Extend:  ADVANCE: Size: 283810 True NumBack:3 wf:True res: 0.5790540863660274
+Post Extend:  ADVANCE: Size: 283810 True NumBack:1 wf:True res: 0.5723973028549567
